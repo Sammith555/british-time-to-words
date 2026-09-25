@@ -4,7 +4,8 @@ public class TimeToWords {
 
     private static final String[] ONES = {
         "zero", "one", "two", "three", "four", "five", "six", "seven",
-        "eight", "nine", "ten", "eleven", "twelve"
+        "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen",
+        "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"
     };
 
     public String toWords(int hour, int minute) {
@@ -30,6 +31,11 @@ public class TimeToWords {
         String multiplesOfFive = multiplesOfFiveToWords(hour, minute);
         if (multiplesOfFive != null) {
             return multiplesOfFive;
+        }
+
+        String actualReading = actualReadingToWords(hour, minute);
+        if (actualReading != null) {
+            return actualReading;
         }
 
         // Implement the general logic for converting time to words here
@@ -86,12 +92,32 @@ public class TimeToWords {
         return null;
     }
 
+    private String actualReadingToWords(int hour, int minute) {
+        int hourRecalc = hour % 12 == 0 ? 12 : hour % 12;
+
+        return ONES[hourRecalc] + " " + numberToWords(minute);
+    }
+
+    private String numberToWords(int number) {
+        if (number < 20) {
+            return ONES[number];
+        }
+
+        int tens = number / 10;
+        int ones = number % 10;
+        return ones == 0 ? minuteToWords(tens * 10) : minuteToWords(tens * 10) + "-" + ONES[ones];
+    }
+
+
     private String minuteToWords(int minute) {
         switch (minute) {
             case 5: return "five";
             case 10: return "ten";
             case 20: return "twenty";
             case 25: return "twenty-five";
+            case 30: return "thirty";
+            case 40: return "forty";
+            case 50: return "fifty";
             default: throw new IllegalArgumentException("Unsupported minute: " + minute);
         }
     }
