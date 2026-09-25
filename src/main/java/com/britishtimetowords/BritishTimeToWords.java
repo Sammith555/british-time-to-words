@@ -35,7 +35,7 @@ public class BritishTimeToWords implements CommandLineRunner {
 
             try {
                 LocalTime time = LocalTime.parse(input, TIME_FORMAT);
-                System.out.println(timeToWords.toWords(time.getHour(), time.getMinute()));
+                System.out.println(timeToWords.toWords(time));
             } catch (DateTimeParseException e) {
                 System.out.println("Error: Invalid time format. Please use HH:MM, e.g. 14:05.");
                 continue;
