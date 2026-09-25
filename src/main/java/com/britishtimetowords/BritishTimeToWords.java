@@ -14,16 +14,27 @@ public class BritishTimeToWords implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        TimeToWords timeToWords = new TimeToWords();
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter a time (HH:MM): ");
-        String input = scanner.nextLine().trim();
+        System.out.println("British Time to Words");
+        System.out.println("Enter a time in 24-hour HH:MM format (e.g. 14:05), or type 'quit'/'exit' to stop.");
+        while (true) {
+            System.out.print("> ");
+            String input = scanner.nextLine().trim();
 
-        String[] parts = input.split(":");
-        int hour = Integer.parseInt(parts[0]);
-        int minute = Integer.parseInt(parts[1]);
+            if (input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit")) {
+                break;
+            }
 
-        System.out.println("Hour: " + hour + ", Minute: " + minute);
-        scanner.close();
+            String[] parts = input.split(":");
+            int hour = Integer.parseInt(parts[0]);
+            int minute = Integer.parseInt(parts[1]);
+
+            System.out.println("Hour: " + hour + ", Minute: " + minute);
+            System.out.println(timeToWords.toWords(hour, minute));
+        }
+
+        scanner.close(); // Close the scanner after exiting the loop
     }
 }
