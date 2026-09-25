@@ -27,6 +27,11 @@ public class TimeToWords {
             return quarterAndHalf;
         }
 
+        String multiplesOfFive = multiplesOfFiveToWords(hour, minute);
+        if (multiplesOfFive != null) {
+            return multiplesOfFive;
+        }
+
         // Implement the general logic for converting time to words here
         return String.format("%02d:%02d", hour, minute);
     }
@@ -64,5 +69,30 @@ public class TimeToWords {
         }
 
         return null;
+    }
+
+    private String multiplesOfFiveToWords(int hour, int minute) {
+        int hourRecalc = hour % 12 == 0 ? 12 : hour % 12;
+        int nextHour = (hourRecalc % 12) + 1;
+
+        if (minute % 5 == 0) {
+            if (minute < 30) {
+                return minuteToWords(minute) + " past " + ONES[hourRecalc];
+            } else {
+                return minuteToWords(60 - minute) + " to " + ONES[nextHour];
+            }
+        }
+
+        return null;
+    }
+
+    private String minuteToWords(int minute) {
+        switch (minute) {
+            case 5: return "five";
+            case 10: return "ten";
+            case 20: return "twenty";
+            case 25: return "twenty-five";
+            default: throw new IllegalArgumentException("Unsupported minute: " + minute);
+        }
     }
 }
