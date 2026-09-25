@@ -39,21 +39,10 @@ public class BritishTimeToWords implements CommandLineRunner {
             } catch (DateTimeParseException e) {
                 System.out.println("Error: Invalid time format. Please use HH:MM, e.g. 14:05.");
                 continue;
-            } catch (NumberFormatException e) {
-                System.out.println("Error: Invalid number format");
-                continue;
             } catch (IllegalArgumentException e) {
                 System.out.println("Error: " + e.getMessage());
                 continue;
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("Error: Invalid time format");
-                continue;
-            } catch (Exception e) {
-                System.out.println("Unexpected error: " + e.getMessage());
-                continue;
             }
-
-            
         }
 
         scanner.close(); // Close the scanner after exiting the loop

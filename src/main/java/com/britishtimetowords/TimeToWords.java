@@ -64,7 +64,7 @@ public class TimeToWords {
 
         if (minute == 15) {
             return Optional.of("quarter past " + ONES[hourRecalc]);
-        } else if (minute == 30) {
+        } else if (minute == MINUTES_PER_HOUR / 2) {
             return Optional.of("half past " + ONES[hourRecalc]);
         } else if (minute == 45) {
             return Optional.of("quarter to " + ONES[nextHour]);
@@ -80,7 +80,7 @@ public class TimeToWords {
         int nextHour = nextTwelveHour(hour);
 
         if (minute % 5 == 0) {
-            if (minute < 30) {
+            if (minute < MINUTES_PER_HOUR / 2) {
                 return Optional.of(minuteToWords(minute) + " past " + ONES[hourRecalc]);
             } else {
                 return Optional.of(minuteToWords(MINUTES_PER_HOUR - minute) + " to " + ONES[nextHour]);
@@ -126,6 +126,6 @@ public class TimeToWords {
 
     private int nextTwelveHour(int hour) {
         int hourRecalc = hourRecalc(hour);
-        return (hourRecalc % 12) + 1;
+        return (hourRecalc % HOURS_PER_HALF_DAY) + 1;
     }
 }
