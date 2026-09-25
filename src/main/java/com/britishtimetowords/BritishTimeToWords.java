@@ -1,5 +1,8 @@
 package com.britishtimetowords;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 import org.springframework.boot.CommandLineRunner;
@@ -8,6 +11,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class BritishTimeToWords implements CommandLineRunner {
+
+    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
+
     public static void main(String[] args) {
         SpringApplication.run(BritishTimeToWords.class, args);
     }
@@ -28,11 +34,11 @@ public class BritishTimeToWords implements CommandLineRunner {
             }
 
             try {
-                String[] parts = input.split(":");
-                int hour = Integer.parseInt(parts[0]);
-                int minute = Integer.parseInt(parts[1]);
-
-                System.out.println(timeToWords.toWords(hour, minute));
+                LocalTime time = LocalTime.parse(input, TIME_FORMAT);
+                System.out.println(timeToWords.toWords(time.getHour(), time.getMinute()));
+            } catch (DateTimeParseException e) {
+                System.out.println("Error: Invalid time format. Please use HH:MM, e.g. 14:05.");
+                continue;
             } catch (NumberFormatException e) {
                 System.out.println("Error: Invalid number format");
                 continue;
