@@ -32,10 +32,15 @@ public class BritishTimeToWords implements CommandLineRunner {
                 int hour = Integer.parseInt(parts[0]);
                 int minute = Integer.parseInt(parts[1]);
 
-                System.out.println("Hour: " + hour + ", Minute: " + minute);
                 System.out.println(timeToWords.toWords(hour, minute));
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Invalid number format");
+                continue;
             } catch (IllegalArgumentException e) {
                 System.out.println("Error: " + e.getMessage());
+                continue;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Error: Invalid time format");
                 continue;
             } catch (Exception e) {
                 System.out.println("Unexpected error: " + e.getMessage());
