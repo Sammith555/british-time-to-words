@@ -6,6 +6,9 @@ import java.util.Optional;
 
 public class TimeToWords {
 
+    private static final int MINUTES_PER_HOUR = 60;
+    private static final int HOURS_PER_HALF_DAY = 12;
+
     private static final String[] ONES = {
         "zero", "one", "two", "three", "four", "five", "six", "seven",
         "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen",
@@ -37,7 +40,7 @@ public class TimeToWords {
         // Implement the logic for specific times like "noon" or "midnight"
         if (hour == 0 && minute == 0) {
             return Optional.of("midnight");
-        } else if (hour == 12 && minute == 0) {
+        } else if (hour == HOURS_PER_HALF_DAY && minute == 0) {
             return Optional.of("noon");
         }
 
@@ -80,7 +83,7 @@ public class TimeToWords {
             if (minute < 30) {
                 return Optional.of(minuteToWords(minute) + " past " + ONES[hourRecalc]);
             } else {
-                return Optional.of(minuteToWords(60 - minute) + " to " + ONES[nextHour]);
+                return Optional.of(minuteToWords(MINUTES_PER_HOUR - minute) + " to " + ONES[nextHour]);
             }
         }
 
@@ -89,7 +92,7 @@ public class TimeToWords {
 
     private Optional<String> actualReadingToWords(LocalTime localTime) {
         int hour = localTime.getHour();
-        int hourRecalc = hour % 12 == 0 ? 12 : hour % 12;
+        int hourRecalc = hourRecalc(hour);
 
         return Optional.of(ONES[hourRecalc] + " " + numberToWords(localTime.getMinute()));
     }
@@ -118,7 +121,7 @@ public class TimeToWords {
     }
 
     private int hourRecalc(int hour) {
-        return hour % 12 == 0 ? 12 : hour % 12;
+        return hour % HOURS_PER_HALF_DAY == 0 ? HOURS_PER_HALF_DAY : hour % HOURS_PER_HALF_DAY;
     }
 
     private int nextTwelveHour(int hour) {
