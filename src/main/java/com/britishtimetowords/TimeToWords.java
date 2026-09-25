@@ -1,5 +1,8 @@
 package com.britishtimetowords;
 
+import java.util.List;
+import java.util.Optional;
+
 public class TimeToWords {
 
     private static final String[] ONES = {
@@ -8,94 +11,83 @@ public class TimeToWords {
         "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"
     };
 
+    // Order matters: earlier rules take precedence; the last rule is the catch-all.
+    private final List<TimeToWordsRule> rules = List.of(
+        this::specificTimeToWords,
+        this::oClockToWords,
+        this::quarterAndHalfToWords,
+        this::multiplesOfFiveToWords,
+        this::actualReadingToWords
+    );
+
     public String toWords(int hour, int minute) {
         if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
             throw new IllegalArgumentException("Invalid time");
         }
 
-        String specificTime = specificTimeToWords(hour, minute);
-        if (specificTime != null) {
-            return specificTime;
-        }
-
-        String oClock = oClockToWords(hour, minute);
-        if (oClock != null) {
-            return oClock;
-        }
-
-        String quarterAndHalf = quarterAndHalfToWords(hour, minute);
-        if (quarterAndHalf != null) {
-            return quarterAndHalf;
-        }
-
-        String multiplesOfFive = multiplesOfFiveToWords(hour, minute);
-        if (multiplesOfFive != null) {
-            return multiplesOfFive;
-        }
-
-        String actualReading = actualReadingToWords(hour, minute);
-        if (actualReading != null) {
-            return actualReading;
-        }
-
-        // Implement the general logic for converting time to words here
-        return String.format("%02d:%02d", hour, minute);
+        return rules.stream()
+            .map(rule -> rule.convert(hour, minute))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Unsupported time: " + String.format("%02d:%02d", hour, minute)));
     }
 
-    private String specificTimeToWords(int hour, int minute) {
+    private Optional<String> specificTimeToWords(int hour, int minute) {
         // Implement the logic for specific times like "noon" or "midnight"
         if (hour == 0 && minute == 0) {
-            return "midnight";
+            return Optional.of("midnight");
         } else if (hour == 12 && minute == 0) {
-            return "noon";
+            return Optional.of("noon");
         }
 
-        return null;
+        return Optional.empty();
     }
 
-    private String oClockToWords(int hour, int minute) {
+    private Optional<String> oClockToWords(int hour, int minute) {
         if (minute == 0) {
-            int hourRecalc = hour % 12 == 0 ? 12 : hour % 12;
-            return String.format("%s o'clock", ONES[hourRecalc]);
+            int hourRecalc = hourRecalc(hour);
+            return Optional.of(String.format("%s o'clock", ONES[hourRecalc]));
         }
 
-        return null;
+        return Optional.empty();
     }
 
-    private String quarterAndHalfToWords(int hour, int minute) {
-        int hourRecalc = hour % 12 == 0 ? 12 : hour % 12;
-        int nextHour = (hourRecalc % 12) + 1;
+    private Optional<String> quarterAndHalfToWords(int hour, int minute) {
+        int hourRecalc = hourRecalc(hour);
+        int nextHour = nextTwelveHour(hour);
 
         if (minute == 15) {
-            return "quarter past " + ONES[hourRecalc];
+            return Optional.of("quarter past " + ONES[hourRecalc]);
         } else if (minute == 30) {
-            return "half past " + ONES[hourRecalc];
+            return Optional.of("half past " + ONES[hourRecalc]);
         } else if (minute == 45) {
-            return "quarter to " + ONES[nextHour];
+            return Optional.of("quarter to " + ONES[nextHour]);
         }
 
-        return null;
+        return Optional.empty();
     }
 
-    private String multiplesOfFiveToWords(int hour, int minute) {
-        int hourRecalc = hour % 12 == 0 ? 12 : hour % 12;
-        int nextHour = (hourRecalc % 12) + 1;
+    private Optional<String> multiplesOfFiveToWords(int hour, int minute) {
+        int hourRecalc = hourRecalc(hour);
+        int nextHour = nextTwelveHour(hour);
 
         if (minute % 5 == 0) {
             if (minute < 30) {
-                return minuteToWords(minute) + " past " + ONES[hourRecalc];
+                return Optional.of(minuteToWords(minute) + " past " + ONES[hourRecalc]);
             } else {
-                return minuteToWords(60 - minute) + " to " + ONES[nextHour];
+                return Optional.of(minuteToWords(60 - minute) + " to " + ONES[nextHour]);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
-    private String actualReadingToWords(int hour, int minute) {
+    private Optional<String> actualReadingToWords(int hour, int minute) {
         int hourRecalc = hour % 12 == 0 ? 12 : hour % 12;
 
-        return ONES[hourRecalc] + " " + numberToWords(minute);
+        return Optional.of(ONES[hourRecalc] + " " + numberToWords(minute));
     }
 
     private String numberToWords(int number) {
@@ -108,7 +100,6 @@ public class TimeToWords {
         return ones == 0 ? minuteToWords(tens * 10) : minuteToWords(tens * 10) + "-" + ONES[ones];
     }
 
-
     private String minuteToWords(int minute) {
         switch (minute) {
             case 5: return "five";
@@ -120,5 +111,14 @@ public class TimeToWords {
             case 50: return "fifty";
             default: throw new IllegalArgumentException("Unsupported minute: " + minute);
         }
+    }
+
+    private int hourRecalc(int hour) {
+        return hour % 12 == 0 ? 12 : hour % 12;
+    }
+
+    private int nextTwelveHour(int hour) {
+        int hourRecalc = hourRecalc(hour);
+        return (hourRecalc % 12) + 1;
     }
 }
