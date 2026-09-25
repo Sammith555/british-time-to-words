@@ -22,6 +22,11 @@ public class TimeToWords {
             return oClock;
         }
 
+        String quarterAndHalf = quarterAndHalfToWords(hour, minute);
+        if (quarterAndHalf != null) {
+            return quarterAndHalf;
+        }
+
         // Implement the general logic for converting time to words here
         return String.format("%02d:%02d", hour, minute);
     }
@@ -39,8 +44,23 @@ public class TimeToWords {
 
     private String oClockToWords(int hour, int minute) {
         if (minute == 0) {
-            int hour_recalc = hour % 12 == 0 ? 12 : hour % 12;
-            return String.format("%s o'clock", ONES[hour_recalc]);
+            int hourRecalc = hour % 12 == 0 ? 12 : hour % 12;
+            return String.format("%s o'clock", ONES[hourRecalc]);
+        }
+
+        return null;
+    }
+
+    private String quarterAndHalfToWords(int hour, int minute) {
+        int hourRecalc = hour % 12 == 0 ? 12 : hour % 12;
+        int nextHour = (hourRecalc % 12) + 1;
+
+        if (minute == 15) {
+            return "quarter past " + ONES[hourRecalc];
+        } else if (minute == 30) {
+            return "half past " + ONES[hourRecalc];
+        } else if (minute == 45) {
+            return "quarter to " + ONES[nextHour];
         }
 
         return null;
