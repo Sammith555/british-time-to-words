@@ -9,38 +9,38 @@ public class ConsoleApp {
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
 
     private final TimeToWords timeToWords;
+    private final Scanner scanner;
 
-    public ConsoleApp(TimeToWords timeToWords) {
+    public ConsoleApp(TimeToWords timeToWords, Scanner scanner) {
         this.timeToWords = timeToWords;
+        this.scanner = scanner;
     }
 
     public void run() {
         System.out.println("British Time to Words");
         System.out.println("Enter a time in 24-hour HH:MM format (e.g. 14:05), or type 'quit'/'exit' to stop.");
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            while (true) {
-                System.out.print("> ");
-                System.out.flush();
+        while (true) {
+            System.out.print("> ");
+            System.out.flush();
 
-                if (!scanner.hasNextLine()) {
-                    break;
-                }
+            if (!scanner.hasNextLine()) {
+                break;
+            }
 
-                String input = scanner.nextLine().trim();
+            String input = scanner.nextLine().trim();
 
-                if (input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit")) {
-                    break;
-                }
+            if (input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit")) {
+                break;
+            }
 
-                try {
-                    LocalTime time = LocalTime.parse(input, TIME_FORMAT);
-                    System.out.println(timeToWords.toWords(time));
-                } catch (DateTimeParseException e) {
-                    System.out.println("Error: Invalid time format. Please use HH:MM, e.g. 14:05.");
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Error: " + e.getMessage());
-                }
+            try {
+                LocalTime time = LocalTime.parse(input, TIME_FORMAT);
+                System.out.println(timeToWords.toWords(time));
+            } catch (DateTimeParseException e) {
+                System.out.println("Error: Invalid time format. Please use HH:MM, e.g. 14:05.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: " + e.getMessage());
             }
         }
     }

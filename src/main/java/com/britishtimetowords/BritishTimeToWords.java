@@ -1,8 +1,13 @@
 package com.britishtimetowords;
 
+import java.util.Scanner;
+
 public class BritishTimeToWords {
 
     public static void main(String[] args) {
-        new ConsoleApp(new TimeToWords()).run();
+        try(Scanner scanner = new Scanner(System.in)) {
+            new ConsoleApp(new TimeToWords(), scanner).run();
+        }
+        
     }
 }
