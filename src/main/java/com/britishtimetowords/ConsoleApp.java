@@ -1,10 +1,10 @@
 package com.britishtimetowords;
 
+import java.io.PrintStream;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-import java.io.PrintStream;
 
 public class ConsoleApp {
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
@@ -25,7 +25,7 @@ public class ConsoleApp {
 
     public void run() {
         output.println("British Time to Words");
-        output.println("Enter a time in 24-hour HH:MM format (e.g. 14:05), or type 'quit'/'exit' to stop.");
+        output.println("Enter a time in 24-hour H:MM format (e.g. 14:05), or type 'quit'/'exit' to stop.");
 
         while (true) {
             output.print("> ");
@@ -45,7 +45,7 @@ public class ConsoleApp {
                 LocalTime time = LocalTime.parse(input, TIME_FORMAT);
                 output.println(timeToWords.toWords(time));
             } catch (DateTimeParseException e) {
-                output.println("Error: Invalid time format. Please use HH:MM, e.g. 14:05.");
+                output.println("Error: Invalid time format. Please use H:MM, e.g. 14:05.");
             } catch (IllegalArgumentException e) {
                 output.println("Error: " + e.getMessage());
             }
